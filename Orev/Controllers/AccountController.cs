@@ -89,7 +89,7 @@ namespace Orev.Controllers
 				try
 				{
 					RavenSession.SaveChanges();
-					RavenSession.Advanced.UseOptimisticConcurrency = false;
+					RavenSession.Advanced.UseOptimisticConcurrency = false; // NOT NEEDED
 
 					FormsAuthentication.SetAuthCookie(model.Email, false /* createPersistentCookie */);
 					return RedirectToAction("Index", "Home");
@@ -97,8 +97,8 @@ namespace Orev.Controllers
 				catch (ConcurrencyException)
 				{
 					ModelState.AddModelError("", "A user name for that e-mail address already exists. Please enter a different e-mail address.");
-					RavenSession.Dispose();
-					RavenSession = null;
+					RavenSession.Dispose(); // MOVE TO BASE CLASS METHOD
+					RavenSession = null;// MOVE TO BASE CLASS METHOD
 				}
 
 				//ModelState.AddModelError("", "An unknown error occurred. Please verify your entry and try again. If the problem persists, please contact your system administrator.");
@@ -135,11 +135,11 @@ namespace Orev.Controllers
 					if (currentUser.ValidatePassword(model.OldPassword))
 					{
 						currentUser.SetPassword(model.NewPassword);
-						RavenSession.SaveChanges();
+						RavenSession.SaveChanges(); // WHY CALL THIS HERE?
 						changePasswordSucceeded = true;
 					}
 				}
-				catch (Exception)
+				catch (Exception) // YOU ARE LOSING EXCEPTION INFO, AT A MIN, LOG THIS
 				{
 					changePasswordSucceeded = false;
 				}
