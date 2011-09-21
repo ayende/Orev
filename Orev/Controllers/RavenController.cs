@@ -21,7 +21,7 @@ namespace Orev.Controllers
 			if (filterContext.IsChildAction || RavenSession == null)
 				return;
 
-			if (RavenSession == null)
+			if (RavenSession == null) // ALREADY CHECKED
 				return;
 
 			using (RavenSession)
