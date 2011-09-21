@@ -20,6 +20,7 @@ namespace Orev.Controllers
 
         public ActionResult Index()
         {
+        	// DO YOU REALLY CARE ABOUT CONSISTENCY HERE? Why force a wait?
         	var corpora = RavenSession.Query<Corpus>().Customize(x => x.WaitForNonStaleResultsAsOfLastWrite()).ToArray();
             return View("Index", corpora);
         }
@@ -56,7 +57,7 @@ namespace Orev.Controllers
 			var corpus = string.IsNullOrWhiteSpace(input.Id) ? null : RavenSession.Load<Corpus>(input.Id);
 			if (corpus != null)
 			{
-				var user = RavenSession.GetUser(User.Identity.Name);
+				var user = RavenSession.GetUser(User.Identity.Name);// DUPLICATE CODE, Refactor to a method
 				if (user == null || user.Role != Models.User.OperationRoles.Admin)
 					return HttpForbidden();
 
@@ -86,7 +87,7 @@ namespace Orev.Controllers
 		[Authorize]
 		public ActionResult FeedDocuments(int corpusId)
 		{
-			var user = RavenSession.GetUser(User.Identity.Name);
+			var user = RavenSession.GetUser(User.Identity.Name);// DUPLICATE CODE
 			if (user == null || user.Role != Models.User.OperationRoles.Admin)
 				return HttpForbidden();
 
@@ -103,7 +104,7 @@ namespace Orev.Controllers
 		[Authorize]
 		public ActionResult FeedDocuments(CorpusFeedingInput input)
 		{
-			var user = RavenSession.GetUser(User.Identity.Name);
+			var user = RavenSession.GetUser(User.Identity.Name); // DUPLICATE CODE
 			if (user == null || user.Role != Models.User.OperationRoles.Admin)
 				return HttpForbidden();
 
@@ -132,7 +133,7 @@ namespace Orev.Controllers
 
 			                    		reader.Read();
 			                    	});
-			task.Start();
+			task.Start(); // NO ERROR HNADLING, Will crash the application on an error
 
 			ViewData.ModelState.AddModelError("FeedOperation", "Corpus is being fed with documents in the background");
 			return Index();
