@@ -82,7 +82,7 @@ namespace Orev.Controllers
 					        	};
 
 					RavenSession.Store(j);
-					RavenSession.SaveChanges();
+					RavenSession.SaveChanges();// WHY CALL SaveChanges() here?
 				}
 			}
 
@@ -99,6 +99,7 @@ namespace Orev.Controllers
 
 			// TODO: Introduce randomization
 
+// WHY do you care for WaitForNonStaleResults here? You just get a document, you don't care which
 			var nextDoc = query.WaitForNonStaleResultsAsOfNow(TimeSpan.FromSeconds(10)).FirstOrDefault();
 			if (nextDoc == null)
 				return Json(new { corpusDone = true, });
